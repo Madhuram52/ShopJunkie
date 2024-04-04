@@ -1,45 +1,44 @@
 import React, { useState } from "react";
-import axios from 'axios'
+import useHttpClient from "../hooks/http-hook"; // Import the custom http hook
+import LoadingSpinner from "../Components/UI Elements/LoadingSpinner";
 
 function SearchProducts() {
+    const { isLoading, error, sendRequest, clearError } = useHttpClient(); // Use the custom http hook
 
-    const [searchTerm, setSearchTerm] = useState('');
+    const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
-    const handleSearch = () => {
-
-        if (searchTerm.trim() !== '') {
-            axios.get('http://localhost:5000/api/search/products',  {
-                params: {
-                    query: searchTerm // Passing query as a part of params object
-                }
-            })
-                .then(res => {
-                    setSearchResults(res.data);
-                })
-                .catch(err => console.log(err));
+    const handleSearch = async () => {
+        if (query.trim() !== '') {
+            try {
+                const responseData = await sendRequest(`http://localhost:5000/api/search/products?query=${query}`);
+                setSearchResults(responseData);
+            } catch (err) {
+                // Error handling
+            }
         } else {
             setSearchResults([]);
         }
     };
-
 
     return (
         <>
             <input
                 type="text"
                 placeholder="Search Products"
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
             />
             <button onClick={handleSearch}>Search</button>
             {/* Display search results */}
-            {searchResults.length > 0 && (
+            {isLoading && <LoadingSpinner />}
+            {error && <p>{error}</p>}
+            {!error && !isLoading && searchResults.length > 0 && (
                 <>
                     <h3>Search Results:</h3>
                     <ul>
                         {searchResults.map(product => (
-                            <li key={product.productName} onClick={() => handleProductSelect(product)}>
+                            <li key={product.productName} >
                                 <strong>{product.productName}</strong>
                                 <p>Price: ${product.productPrice}</p>
                                 <p>ShopName: {product.shopName}</p>
@@ -49,6 +48,7 @@ function SearchProducts() {
                     </ul>
                 </>
             )}
+
         </>
     );
 }

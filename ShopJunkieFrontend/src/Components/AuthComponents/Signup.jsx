@@ -1,13 +1,15 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../Contexts/auth-context";
-import axios from 'axios';
+import useHttpClient from "../../hooks/http-hook";
 import Form from "./Form";
 import Input from "./Input";
 import usericon from "../../Assets/Img/usercon.png";
 import keyicon from "../../Assets/Img/keyIcon.png";
+import LoadingSpinner from "../UI Elements/LoadingSpinner";
 
 const Signup = ({ toggleForm }) => {
   const auth = useContext(AuthContext);
+  const {isLoading, error , sendRequest,clearError } = useHttpClient();
 
   const initialFormData = {
     shopname: "",
@@ -77,18 +79,19 @@ const Signup = ({ toggleForm }) => {
       return;
     }
 
-    axios.post('http://localhost:5000/api/auth/signup', { formData })
-    .then(res => {
-        console.log(res.data.message);
-    })
-    .catch(err => console.log(err));
+    try {
+      const response = await sendRequest('http://localhost:5000/api/auth/signup', 'POST', formData);
+      console.log(response.message);
+      auth.login(response.shop._id);
+    } catch (err) {
+    }
 
-    // Perform signup action here
-    auth.login();
+
   };
 
   return (
     <>
+      {isLoading && <LoadingSpinner  asOverlay/>}
       <Form onSubmit={handleSubmit}>
         <Input
           type="text"
@@ -138,10 +141,11 @@ const Signup = ({ toggleForm }) => {
           errorMessage={errors.confirmPassword}
           icon={keyicon}
         />
-        <button className="login-button" type="submit">
-          Signup
+        <button className="login-button" type="submit" disabled={isLoading}>
+        {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
       </Form>
+      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message if error state is not empty */}
       <p>
         Already have an account?{" "}
         <a href="#!" onClick={toggleForm}>

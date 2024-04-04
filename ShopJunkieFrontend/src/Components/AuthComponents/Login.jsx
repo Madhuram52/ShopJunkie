@@ -1,18 +1,15 @@
-// login.js
-
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../../Contexts/auth-context";
-// import { toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-import axios from 'axios'
 import usericon from "../../Assets/Img/usercon.png";
 import keyicon from "../../Assets/Img/keyIcon.png";
 import Form from "./Form";
 import Input from "./Input";
+import LoadingSpinner from "../UI Elements/LoadingSpinner";
+import useHttpClient from "../../hooks/http-hook";
 
 const Login = ({ toggleForm }) => {
-  const auth = useContext(AuthContext); // Accessing AuthContext
-
+  const auth = useContext(AuthContext);
+  const {isLoading, error , sendRequest,clearError } = useHttpClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -20,22 +17,30 @@ const Login = ({ toggleForm }) => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+    if (id === 'email') {
+      // If email is changed, reset password to an empty string
+      setFormData({ email: value, password: "" });
+    } else {
+      setFormData({ ...formData, [id]: value });
+    }
+    clearError();
   };
+  
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5000/api/auth/login', {formData})
-      .then(res => {
-        console.log(res.data.message); // Logging the message from the response
-      })
-      .catch(err => console.log(err));
-
-    auth.login();
+    try {
+      const response = await sendRequest('http://localhost:5000/api/auth/login', 'POST', formData);
+      console.log(response.message);
+      auth.login(response.shop._id);
+    } catch (err) {
+    }
   };
+
 
   return (
     <>
+      {isLoading && <LoadingSpinner asOverlay />}
       <Form onSubmit={handleSubmit}>
         <Input
           type="email"
@@ -53,10 +58,11 @@ const Login = ({ toggleForm }) => {
           onChange={handleInputChange}
           icon={keyicon}
         />
-        <button className="login-button" type="submit">
-          Log In
+        <button className="login-button" type="submit" disabled={isLoading}>
+          {isLoading ? "Logging In..." : "Log In"}
         </button>
       </Form>
+      {error && <p style={{ color: 'red' }} >{error}</p>} {/* Display error message if error state is not empty */}
       <p className="SwitchSL">
         Don't have an account?{" "}
         <a href="#!" onClick={toggleForm}>

@@ -3,7 +3,9 @@ const Shop = require("../models/Shop");
 const HttpError = require("../models/http-error");
 
 const addProducts = async (req, res, next) => {
-    const formData = req.body.formData;
+    const formData = req.body;
+
+    // console.log("sdfds");
 
     const shopId = formData.shopId; 
     const shop = await Shop.findById(shopId);
@@ -25,7 +27,7 @@ const addProducts = async (req, res, next) => {
     const newProduct = new Product({
         shopName: shopName,
         productName: formData.productName,
-        prodcutType: formData.prodcutType,
+        productType: formData.productType,
         productLocation: formData.productLocation,
         productPrice: formData.productPrice,
         productQuantity: formData.productQuantity,

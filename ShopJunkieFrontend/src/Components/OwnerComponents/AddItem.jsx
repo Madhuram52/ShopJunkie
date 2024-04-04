@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { AuthContext } from "../../Contexts/auth-context";
+import LoadingSpinner from "../UI Elements/LoadingSpinner";
+import useHttpClient from "../../hooks/http-hook"; // Assuming you have a custom hook for HTTP requests
 
 function AddItem() {
+  const auth = useContext(AuthContext);
   const [itemName, setItemName] = useState("");
   const [itemType, setItemType] = useState("");
   const [itemPrice, setItemPrice] = useState("");
@@ -12,15 +16,21 @@ function AddItem() {
   const [itemPriceError, setItemPriceError] = useState("");
   const [itemQuantityError, setItemQuantityError] = useState("");
   const [itemLocationError, setItemLocationError] = useState("");
+  const [success, setSuccess] = useState(false);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient(); // Custom HTTP hook
 
   const handleItemNameChange = (e) => {
     setItemName(e.target.value);
     setItemNameError("");
+    clearError();
+    setSuccess(false);
   };
 
   const handleItemTypeChange = (e) => {
     setItemType(e.target.value);
     setItemTypeError("");
+    clearError();
+    setSuccess(false);
   };
 
   const handleItemPriceChange = (e) => {
@@ -30,6 +40,8 @@ function AddItem() {
     if (!price || parseFloat(price) <= 0) {
       setItemPriceError("Item price must be greater than 0.");
     }
+    clearError();
+    setSuccess(false);
   };
 
   const handleItemQuantityChange = (e) => {
@@ -39,14 +51,18 @@ function AddItem() {
     if (!quantity || parseFloat(quantity) <= 0) {
       setItemQuantityError("Item quantity must be greater than 0.");
     }
+    clearError();
+    setSuccess(false);
   };
 
   const handleItemLocationChange = (e) => {
     setItemLocation(e.target.value);
     setItemLocationError("");
+    clearError();
+    setSuccess(false);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let hasError = false;
 
@@ -75,27 +91,29 @@ function AddItem() {
       return;
     }
 
-
-
-    const {shopId } = useParams()
-    // Validation passed, perform any action you want with the entered data
     const formData = {
-      shopId: shopId,
+      shopId: auth.shopId,
       productName: itemName,
       productType: itemType,
       productPrice: itemPrice,
       productLocation: itemLocation,
-      productQuantity : itemQuantity
+      productQuantity: itemQuantity,
     };
 
-
-
-    // Reset the form fields after submission
-    setItemName("");
-    setItemType("");
-    setItemPrice("");
-    setItemQuantity("");
-    setItemLocation("");
+    console.log(formData);
+    try {
+      const response = await sendRequest(`http://localhost:5000/api/owner/${auth.shopId}`, 'POST', formData);
+      console.log(response.message);
+      auth.login(response.shop._id);
+      // Reset the form fields after successful submission
+      setItemName("");
+      setItemType("");
+      setItemPrice("");
+      setItemQuantity("");
+      setItemLocation("");
+      setSuccess(true);
+    } catch (err) {
+    }
   };
 
   return (
@@ -163,6 +181,11 @@ function AddItem() {
         </div>
         <button type="submit">Add Item</button>
       </form>
+      <div>
+        {isLoading && <LoadingSpinner />} {/* Show loading spinner if loading */}
+        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Show error message if error */}
+        {success && !isLoading && !error && <p>Item added successfully!</p>} {/* Show success message */}
+      </div>
     </div>
   );
 }

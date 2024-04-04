@@ -13,13 +13,13 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    quantityLeft: {
+    productQuantity: {
         type: Number,
         required: true
     },
     soldThisMonth: {
         type: Number,
-        required: true
+        required: false
     },
     productType: {
         type: String,

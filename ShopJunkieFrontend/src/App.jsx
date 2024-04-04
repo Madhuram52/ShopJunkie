@@ -11,13 +11,16 @@ import SearchShop from './Pages/SearchShop';
 function App() {
 
   const [isLoggedIn, setIsLoggedin] = useState(false);
+  const [shopId, setShopId]= useState(null);
 
-  const login = useCallback(() => {
+  const login = useCallback((sid) => {
     setIsLoggedin(true)
+    setShopId(sid)
   }, [])
 
   const logout = useCallback(() => {
     setIsLoggedin(false)
+    setShopId(null)
   }, [])
   // let isLoggedIn=1;
   let routes;
@@ -47,7 +50,7 @@ function App() {
   }
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}>
+    <AuthContext.Provider value={{ isLoggedIn: isLoggedIn, shopId: shopId, login: login, logout: logout }}>
       <Routes>
         {routes}
       </Routes>

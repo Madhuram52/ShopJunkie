@@ -5,6 +5,8 @@ const HttpError = require("../models/http-error");
 const getProducts = async (req, res, next) => {
     const query = req.query.query;
 
+    console.log(query);
+
     const products = await Product.find({
         productName: { $regex: query, $options: "i" },
     });

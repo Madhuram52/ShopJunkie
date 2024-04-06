@@ -31,8 +31,8 @@ function App() {
         <Route path="/search" element={<SearchProducts />} />
         <Route path="/searchshop" element={<SearchShop />}></Route>
         <Route path="/searchprod" element={<SearchProducts />} />
-        <Route path="/:sname/owner" element={<Owner />} />
-        <Route path="/:sname/customer" element={<Customer />} />
+        <Route path="/:sid/owner" element={<Owner />} />
+        <Route path="/:sid/customer" element={<Customer loadAll={false} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </>
     );

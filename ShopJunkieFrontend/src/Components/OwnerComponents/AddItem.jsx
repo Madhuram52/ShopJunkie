@@ -99,12 +99,10 @@ function AddItem() {
       productLocation: itemLocation,
       productQuantity: itemQuantity,
     };
-
-    console.log(formData);
+    
     try {
       const response = await sendRequest(`http://localhost:5000/api/owner/${auth.shopId}`, 'POST', formData);
       console.log(response.message);
-      auth.login(response.shop._id);
       // Reset the form fields after successful submission
       setItemName("");
       setItemType("");

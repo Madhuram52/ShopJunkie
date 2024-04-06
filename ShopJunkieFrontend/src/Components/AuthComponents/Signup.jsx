@@ -30,6 +30,7 @@ const Signup = ({ toggleForm }) => {
     const { id, value } = e.target;
     setErrors({ ...errors, [id]: "" });
     setFormData({ ...formData, [id]: value });
+    clearError
   };
 
   const handleKeyPress = (e) => {

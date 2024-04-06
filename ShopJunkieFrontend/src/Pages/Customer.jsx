@@ -5,33 +5,46 @@ import useHttpClient from "../hooks/http-hook"; // Import the useHttpClient hook
 import LoadingSpinner from "../Components/UI Elements/LoadingSpinner";
 // import axios from "axios"; // No longer needed
 
-function Customer({ sname: propSname }) {
+function Customer(props) {
+  const propsId = props.shopId;
+  const loadAll = props.loadAll;
+  const productSelect = props.onProductSelect;
   const auth = useContext(AuthContext);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const { sname: routeSname } = useParams(); // Using useParams to get sid from the route params
+  // const { shopid: routeSname } = useParams(); // Using useParams to get sid from the route params
+
+  const routeId =auth.shopId;
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient(); // Initialize the useHttpClient hook
 
   // Determine the sid value based on whether it's passed as a prop or from the route params
-  const sname = propSname || routeSname;
+  const shopId = propsId || routeId;
 
   const handleSubmit = async () => {
     if (query.trim() !== "") {
       try {
         const responseData = await sendRequest(
-          `http://localhost:5000/api/search/${sname}?query=${query}`
+          `http://localhost:5000/api/search/${shopId}?query=${query}`
         );
         setSearchResults(responseData);
       } catch (err) {
-        console.log(err);
+        setSearchResults([]);
+        console.log(err.response.data.message);
       }
     } else {
       setSearchResults([]);
     }
   };
 
-  // handleProductSelect function definition is missing in the provided code
+  const handleProductSelect = (product) =>
+  {
+    if (productSelect && typeof productSelect === 'function') {
+      productSelect(product);
+    } else {
+      console.log("Product select function not provided or not a function.");
+    }
+  }
 
   return (
     <>
@@ -48,11 +61,13 @@ function Customer({ sname: propSname }) {
           <h3>Search Results:</h3>
           <ul>
             {searchResults.map((product) => (
-              <li key={product.productName}>
+              <li key={product.productName} onClick={() => handleProductSelect(product)}>
                 <strong>{product.productName}</strong>
                 <p>Type: {product.productType}</p>
                 <p>Price: ${product.productPrice}</p>
                 <p>Location: {product.productLocation}</p>
+                {loadAll && <p>Quantity Left: {product.productQuantity}</p>}
+                {loadAll && <p>Sold This Month: {product.SoldThisMonth}</p>}
               </li>
             ))}
           </ul>
@@ -64,7 +79,7 @@ function Customer({ sname: propSname }) {
         </div>
       )}
       {/* Rendering sid dynamically based on the prop or route */}
-      <div>{sname}</div>
+      {/* <div>{sname}</div> */}
     </>
   );
 }

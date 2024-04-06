@@ -1,10 +1,15 @@
 // DashNavBar.jsx
-import React from 'react';
+import React  from 'react';
 import DashNavItem from './OwnerNavbarComponents/DashNavItem';
 import { Link, useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../Contexts/auth-context';
 
 const DashNavBar = ({ onSelectNavItem }) => {
-  const { sid } = useParams();
+
+  const auth = useContext(AuthContext);
+  const shopId = auth.shopId;
+
   return (
     <>
       <div className="dashboard-nav">
@@ -15,7 +20,7 @@ const DashNavBar = ({ onSelectNavItem }) => {
       </div>
       <div>
         {/* Call handleSwitchMode onClick */}
-        <Link to={`/${sid}/customer`}>
+        <Link to={`/${shopId}/customer`}>
           <button>Switch to Customer Mode</button>
         </Link>
       </div>

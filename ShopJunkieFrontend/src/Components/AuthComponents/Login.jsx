@@ -32,6 +32,7 @@ const Login = ({ toggleForm }) => {
     try {
       const response = await sendRequest('http://localhost:5000/api/auth/login', 'POST', formData);
       console.log(response.message);
+      // console.log(response.shop._id);
       auth.login(response.shop._id);
     } catch (err) {
     }

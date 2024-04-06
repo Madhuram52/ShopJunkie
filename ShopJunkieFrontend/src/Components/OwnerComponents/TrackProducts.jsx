@@ -1,95 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import Customer from '../../Pages/Customer';
+import useHttpClient from '../../hooks/http-hook';
+import { AuthContext } from '../../Contexts/auth-context';
+import LoadingSpinner from '../UI Elements/LoadingSpinner';
 
 const TrackProducts = () => {
-  // Dummy JSON data representing three products
-  const products = [
-    {
-      productName: "T-shirt",
-      productPrice: 20,
-      productLocation: "Shelf A, Row 1",
-      quantityLeft: 50,
-      soldThisMonth: 20,
-      productType: "Clothing"
-    },
-    {
-      productName: "Sneakers",
-      productPrice: 50,
-      productLocation: "Shelf B, Row 2",
-      quantityLeft: 0,
-      soldThisMonth: 15,
-      productType: "Footwear"
-    },
-    {
-      productName: "Granola Bars",
-      productPrice: 5,
-      productLocation: "Shelf C, Row 3",
-      quantityLeft: 100,
-      soldThisMonth: 40,
-      productType: "Food"
-    }
-  ];
+  const { isLoading, error, sendRequest } = useHttpClient();
+  const auth = useContext(AuthContext);
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [products, setProducts] = useState([]);
 
-  // Function to handle search button click
-  const handleSearch = () => {
-    const results = products.filter(product =>
-      product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
-  };
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const responseData = await sendRequest(`http://localhost:5000/api/owner/${auth.shopId}`);
+        setProducts(responseData);
+      } catch (err) {
+        // Handle error
+      }
+    };
 
-  // Calculate total inventory overview
-  const totalInventory = products.reduce((acc, product) => acc + product.quantityLeft, 0);
-
-  // Filter out-of-stock products
-  const outOfStockProducts = products.filter(product => product.quantityLeft === 0);
+    fetchProducts();
+  }, [sendRequest, auth.shopId]);
 
   return (
     <div>
       <h2>Track Products</h2>
-      {/* Search Products */}
-      <input
-        type="text"
-        placeholder="Search Products"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
+      <Customer loadAll={true} />
 
-      {/* Display search results */}
-      {searchResults.length > 0 && (
-        <>
-          <h3>Search Results:</h3>
-          <ul>
-            {searchResults.map(product => (
-              <li key={product.productName}>
-                <strong>{product.productName}</strong>
-                <p>Price: ${product.productPrice}</p>
-                <p>Location: {product.productLocation}</p>
-                <p>Quantity Left: {product.quantityLeft}</p>
-                <p>Sold This Month: {product.soldThisMonth}</p>
-                <p>Type: {product.productType}</p>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
-      {/* Inventory Overview */}
       <h3>Inventory Overview:</h3>
-      <p>Total Inventory: {totalInventory}</p>
-
-      {/* Out-of-Stock Products */}
-      <h3>Out-of-Stock Products:</h3>
       <ul>
-        {outOfStockProducts.map(product => (
+      {isLoading && <LoadingSpinner />}
+      {error && <p>Error: {error}</p>}
+        {products.map((product) => (
           <li key={product.productName}>
-            {product.productName}-${product.productPrice}
-            Sold This Month :{product.soldThisMonth}
+            {product.productName} - ${product.productPrice}
+            Sold This Month: {product.soldThisMonth}
           </li>
         ))}
+      </ul>
+
+      <h3>Out-of-Stock Products:</h3>
+      <ul>
+      {isLoading && <LoadingSpinner />}
+      {error && <p>Error: {error}</p>}
+        {products
+          .filter((product) => product.productQuantity === 0)
+          .map((product) => (
+            <li key={product.productName}>
+              {product.productName} - ${product.productPrice}
+              Sold This Month: {product.soldThisMonth}
+            </li>
+          ))}
       </ul>
     </div>
   );

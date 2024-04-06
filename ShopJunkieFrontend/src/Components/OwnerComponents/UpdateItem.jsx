@@ -1,65 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Customer from '../../Pages/Customer';
+import useHttpClient from '../../hooks/http-hook'; // Update the path to your useHttpClient hook
+import LoadingSpinner from '../UI Elements/LoadingSpinner';
 
 function UpdateItem() {
-  // Dummy JSON data representing three products
-  const products = [
-    {
-      productName: "T-shirt",
-      productPrice: 20,
-      productLocation: "Shelf A, Row 1",
-      quantityLeft: 50,
-      soldThisMonth: 20,
-      productType: "Clothing"
-    },
-    {
-      productName: "Sneakers",
-      productPrice: 50,
-      productLocation: "Shelf B, Row 2",
-      quantityLeft: 30,
-      soldThisMonth: 15,
-      productType: "Footwear"
-    },
-    {
-      productName: "Granola Bars",
-      productPrice: 5,
-      productLocation: "Shelf C, Row 3",
-      quantityLeft: 100,
-      soldThisMonth: 40,
-      productType: "Food"
-    }
-  ];
+  const { isLoading, error, sendRequest } = useHttpClient();
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [updateFields, setUpdateFields] = useState({
     price: '',
     location: '',
     quantity: ''
   });
+  const [refreshCustomer, setRefreshCustomer] = useState(false); // State to trigger refresh
+  const [message, setMessage] = useState('');
 
-  // Function to handle search button click
-  const handleSearch = () => {
-    if (searchTerm != '') {
-      const results = products.filter(product =>
-        product.productName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-      setSearchResults(results);
-      setSelectedProduct(null);
-    }
-    else {
-      // console.log("sdf");
-      setSearchResults([]);
-      setSelectedProduct(null);
+  const handleSearch = async (result) => {
+    try {
+      setSelectedProduct(result);
+    } catch (err) {
+      console.error('Error occurred while searching:', err);
     }
   };
 
-  // Function to handle product selection
-  const handleProductSelect = (product) => {
-    setSelectedProduct(product);
-  };
-
-  // Function to handle update of product fields
   const handleFieldChange = (e, field) => {
     setUpdateFields(prevState => ({
       ...prevState,
@@ -67,83 +30,53 @@ function UpdateItem() {
     }));
   };
 
-  // Function to handle updating the selected product
-  const handleUpdateProduct = () => {
-    // console.log(updateFields);
-
+  const handleUpdateProduct = async () => {
+    try {
       const updatedProduct = {
         ...selectedProduct,
         productPrice: updateFields.price || selectedProduct.productPrice,
         productLocation: updateFields.location || selectedProduct.productLocation,
-        quantityLeft: updateFields.quantity || selectedProduct.quantityLeft
+        productQuantity: updateFields.quantity || selectedProduct.productQuantity
       };
-      // Replace the updated product in the search results
-      const updatedResults = searchResults.map(product =>
-        product.productName === selectedProduct.productName ? updatedProduct : product
-      );
-      // Update the state with the new search results
-      setSearchResults(updatedResults);
-      // Reset selected product and update fields after update
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'PATCH', updatedProduct);
+      console.log('Product updated successfully:', responseData);
       setSelectedProduct(null);
       setUpdateFields({
         price: '',
         location: '',
         quantity: ''
       });
+      setMessage('Product updated successfully');
+      setRefreshCustomer(true); // Trigger Customer component refresh
+    } catch (err) {
+      console.error('Error occurred while updating product:', err);
+    }
   };
 
-
-  // Function to handle removing the selected product
-  const handleRemoveProduct = () => {
-
-    // Filter out the selected product from the search results
-    const updatedResults = searchResults.filter(product =>
-      product.productName !== selectedProduct.productName
-    );
-    // Update the state with the new search results
-    setSearchResults(updatedResults);
-    // Reset selected product and update fields after removal
-    setSelectedProduct(null);
-    setUpdateFields({
-      price: '',
-      location: '',
-      quantity: ''
-    });
-    // Clear the search term
-    setSearchTerm('');
+  const handleRemoveProduct = async () => {
+    try {
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'DELETE');
+      console.log('Product removed successfully:', responseData);
+      setSelectedProduct(null);
+      setMessage('Product removed successfully');
+      setRefreshCustomer(true); // Trigger Customer component refresh
+    } catch (err) {
+      console.error('Error occurred while removing product:', err);
+    }
   };
+
+  useEffect(() => {
+    // Reset refreshCustomer state after 1 second to avoid continuous refresh
+    const timer = setTimeout(() => {
+      setRefreshCustomer(false);
+      setMessage('');
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [refreshCustomer]);
 
   return (
     <div>
-      <h2>Update Item</h2>
-      {/* Search Products */}
-      <input
-        type="text"
-        placeholder="Search Products"
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-      <button onClick={handleSearch}>Search</button>
-
-      {/* Display search results */}
-      {searchResults.length > 0 && (
-        <>
-          <h3>Search Results:</h3>
-          <ul>
-            {searchResults.map(product => (
-              <li key={product.productName} onClick={() => handleProductSelect(product)}>
-                <strong>{product.productName}</strong>
-                <p>Price: ${product.productPrice}</p>
-                <p>Location: {product.productLocation}</p>
-                <p>Quantity Left: {product.quantityLeft}</p>
-                <p>Sold This Month: {product.soldThisMonth}</p>
-                <p>Type: {product.productType}</p>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-
+      <Customer key={refreshCustomer} loadAll={true} onProductSelect={handleSearch} />
       {/* Update Fields */}
       {selectedProduct && (
         <div>
@@ -168,17 +101,17 @@ function UpdateItem() {
           />
           <button onClick={handleUpdateProduct}>Update</button>
           <button onClick={handleRemoveProduct}>Remove Product</button>
-          {/* Add more buttons for other update options */}
         </div>
       )}
 
-      {/* Display message for removed product */}
-      {selectedProduct && !searchResults.includes(selectedProduct) && (
-        <p>{selectedProduct.productName} is removed.</p>
-      )}
+      {/* Display error message */}
+      {error && <p>Error: {error}</p>}
+      {/* Display loading indicator */}
+      {isLoading && <LoadingSpinner />}
+      {/* Display success message */}
+      {message && <p>{message}</p>}
     </div>
   );
-
-
 }
+
 export default UpdateItem;

@@ -6,7 +6,7 @@ router.get("/products", searchControllers.getProducts);
 
 router.get("/shops", searchControllers.getShops);
 
-router.get("/:sname", searchControllers.getProductBySname);
+router.get("/:shopId", searchControllers.getProductBySname);
 
 module.exports = router;
 

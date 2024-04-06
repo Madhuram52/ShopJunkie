@@ -38,7 +38,7 @@ function SearchProducts() {
                     <h3>Search Results:</h3>
                     <ul>
                         {searchResults.map(product => (
-                            <li key={product.productName} >
+                            <li key={product._id} >
                                 <strong>{product.productName}</strong>
                                 <p>Price: ${product.productPrice}</p>
                                 <p>ShopName: {product.shopName}</p>

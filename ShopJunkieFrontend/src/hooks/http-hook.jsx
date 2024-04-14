@@ -7,7 +7,7 @@ const useHttpClient = () => {
 
     const activehttpRequests = useRef([]);
 
-    const sendRequest = useCallback(async (url, method = "GET", data = null) => {
+    const sendRequest = useCallback(async (url, method = "GET", data = null ,headers = {}) => {
         setIsLoading(true);
         const httpAbortCtrl = new AbortController();
         activehttpRequests.current.push(httpAbortCtrl);
@@ -18,6 +18,7 @@ const useHttpClient = () => {
                 method,
                 url,
                 data,
+                headers : {...headers},
                 signal: httpAbortCtrl.signal
             };
 

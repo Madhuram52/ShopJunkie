@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useContext } from 'react';
 import Customer from '../../Pages/Customer';
 import useHttpClient from '../../hooks/http-hook'; // Update the path to your useHttpClient hook
+import { AuthContext } from '../../Contexts/auth-context';
 import LoadingSpinner from '../UI Elements/LoadingSpinner';
 
 function UpdateItem() {
   const { isLoading, error, sendRequest } = useHttpClient();
+  const auth = useContext(AuthContext);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [updateFields, setUpdateFields] = useState({
@@ -38,7 +40,7 @@ function UpdateItem() {
         productLocation: updateFields.location || selectedProduct.productLocation,
         productQuantity: updateFields.quantity || selectedProduct.productQuantity
       };
-      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'PATCH', updatedProduct);
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'PATCH', updatedProduct , { Authorization: 'Bearer ' + auth.token });
       console.log('Product updated successfully:', responseData);
       setSelectedProduct(null);
       setUpdateFields({
@@ -55,7 +57,7 @@ function UpdateItem() {
 
   const handleRemoveProduct = async () => {
     try {
-      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'DELETE');
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'DELETE' ,null,{ Authorization: 'Bearer ' + auth.token });
       console.log('Product removed successfully:', responseData);
       setSelectedProduct(null);
       setMessage('Product removed successfully');

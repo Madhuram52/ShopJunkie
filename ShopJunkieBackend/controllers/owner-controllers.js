@@ -45,11 +45,15 @@ const addProducts = async (req, res, next) => {
 
 const updateProducts = async (req, res, next) => {
     const formData = req.body;
-    console.log(formData);
     const productId = req.params.productid;
 
 
     let product = await Product.findById(productId);
+
+    if (product.shopId !== req.shopData.shopId) {
+        const error = new HttpError('You are not allowed to edit this item', 401)
+        return next(error);
+    }
 
     if (formData.productPrice) product.productPrice = formData.productPrice;
     if (formData.productLocation) product.productLocation = formData.productLocation;
@@ -62,33 +66,50 @@ const updateProducts = async (req, res, next) => {
 
 
 const deleteProducts = async (req, res, next) => {
-
     const productId = req.params.productid;
 
-    let product = await Product.findByIdAndDelete(productId);
+    try {
+        let product = await Product.findById(productId);
+        if (!product) {
+            const error = new HttpError('Product not found', 404);
+            return next(error);
+        }
 
-    res.status(200).json({ message: 'Product deleted successfully', product });
-}
+        if (product.shopId !== req.shopData.shopId) {
+            const error = new HttpError('You are not allowed to delete this item', 401);
+            return next(error);
+        }
+        await Product.deleteOne({ _id: productId });
 
-const fetchAllProducts = async (req, res, next) => {
-    console.log("sdfds");
-    const shopId = req.params.shopId;
-    console.log(shopId);
-
-    const products = await Product.find({ shopId: shopId });
-
-    // Check if products exist for the given shopId
-
-    if (!products || products.length === 0) {
-        const error = new HttpError("No products found for the given shop and query", 400);
+        res.status(200).json({ message: 'Product deleted successfully', product });
+    } catch (error) {
         return next(error);
     }
-
-    // If products exist, return them
-    console.log(products);
-    res.status(200).json(products);
-
 }
+
+
+const fetchAllProducts = async (req, res, next) => {
+    const shopId = req.params.shopId;
+
+    try {
+
+        if (shopId !== req.shopData.shopId) {
+            const error = new HttpError('You are not allowed to view products of this shop', 401);
+            return next(error);
+        }
+
+        const products = await Product.find({ shopId: shopId });
+
+        if (!products || products.length === 0) {
+            const error = new HttpError("No products found for the given shop", 404);
+            return next(error);
+        }
+        res.status(200).json(products);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 
 
 

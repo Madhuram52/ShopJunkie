@@ -85,7 +85,7 @@ const Signup = ({ toggleForm }) => {
     try {
       const response = await sendRequest('http://localhost:5000/api/auth/signup', 'POST', formData);
       console.log(response.message);
-      auth.login(response.shop._id);
+      auth.login(response.shopId,response.token);
     } catch (err) {
     }
 

@@ -13,7 +13,7 @@ const TrackProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const responseData = await sendRequest(`http://localhost:5000/api/owner/${auth.shopId}`);
+        const responseData = await sendRequest(`http://localhost:5000/api/owner/${auth.shopId}`,'GET',null,{ Authorization: 'Bearer ' + auth.token });
         setProducts(responseData);
       } catch (err) {
         // Handle error

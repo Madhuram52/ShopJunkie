@@ -6,9 +6,9 @@ import { Link } from "react-router-dom";
 function NavItemContainer() {
     const auth = useContext(AuthContext);
     return (
-        <>
-            <NavItem link="#">About Us</NavItem>
-            <NavItem link="#">Contact Us</NavItem>
+        <div className="nav-item-container">
+            {/* <NavItem link="#">About Us</NavItem>
+            <NavItem link="#">Contact Us</NavItem> */}
             {!auth.isLoggedIn && (
                         <Link to="/auth">
                             <button className="user-link">Sign Up/Log In</button>
@@ -16,9 +16,9 @@ function NavItemContainer() {
                     )}
 
                 {auth.isLoggedIn && (
-                            <button className="user-link" onClick={auth.logout}>LOG OUT</button>
+                            <button className="user-link" onClick={auth.logout}>Logout</button>
                     )}
-        </>
+        </div>
     )
 }
-export default NavItemContainer
+export default NavItemContainer;

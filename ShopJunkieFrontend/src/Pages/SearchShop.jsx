@@ -1,15 +1,16 @@
+// SearchShop.jsx
+
 import React, { useState, useEffect } from "react";
 import Customer from "./Customer";
 import useHttpClient from "../hooks/http-hook";
 import LoadingSpinner from "../Components/UI Elements/LoadingSpinner";
+import "./SearchShop.css"; // Import CSS for SearchShop styling
 
 function SearchShop() {
     const [query, setQuery] = useState('');
-    // const [query2,setQuery2]=useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [selectedShop, setSelectedShop] = useState(null);
-    // const [showShop, setShowShop] = useState(false);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { isLoading, error, sendRequest } = useHttpClient();
 
     useEffect(() => {
         const fetchSuggestions = async () => {
@@ -17,10 +18,9 @@ function SearchShop() {
                 const responseData = await sendRequest(
                     `http://localhost:5000/api/search/shops?query=${query}`
                 );
-                if (responseData.length == 1 && responseData[0].shopName == query) {
+                if (responseData.length === 1 && responseData[0].shopName === query) {
                     setSuggestions([]);
-                }
-                else {
+                } else {
                     setSuggestions(responseData);
                 }
             } catch (err) {
@@ -36,42 +36,39 @@ function SearchShop() {
     }, [query, sendRequest]);
 
     const handleInputChange = (e) => {
-        // console.log("world")
         setQuery(e.target.value);
     };
 
     const handleSuggestionClick = (shop) => {
-        console.log(shop);
         setSelectedShop(shop._id);
         setQuery(shop.shopName)
-        // setSuggestions([]);
     };
 
-
-
     return (
-        <>
-            <div>
-                <input type="text" value={query} onChange={handleInputChange} />
+        <div className="search-shop-container">
+            <div className="search-input-container">
+                <input type="text" value={query} onChange={handleInputChange} placeholder="Search Shops" />
             </div>
-            <div>
-                {error && <p style={{ color: 'blue' }} >{error}</p>}
+            <div className="suggestions-container">
+                {error && <p className="error-message">{error}</p>}
                 {isLoading && <LoadingSpinner />}
                 {!error && !isLoading && (
-                    <div>
+                    <div className="suggestions-list">
                         {suggestions.map((shop) => (
-                            <div key={shop._id} onClick={() => handleSuggestionClick(shop)}>{shop.shopName}</div>
+                            <div key={shop._id} onClick={() => handleSuggestionClick(shop)} className="suggestion-item">
+                                {shop.shopName}
+                            </div>
                         ))}
                     </div>
                 )}
             </div>
             {/* Render the Customer component only if selectedShop has a value */}
             {selectedShop && (
-                <div>
-                    <Customer shopId={selectedShop} loadAll = {false} />
+                <div className="customer-container">
+                    <Customer shopId={selectedShop} loadAll={false} />
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

@@ -1,0 +1,96 @@
+/* HomeContainer.css */
+@font-face {
+  font-family: "HeadingFont";
+  src: url("../../assets/fonts/Audrey/Audrey/Audrey-Bold.otf")
+    format("opentype");
+  /* Add font-weight and font-style if your font supports them */
+}
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 24px;
+  margin: 10px 50px;
+  border-radius: 20px;
+  background-color: #e3fdfd;
+}
+
+.home-container {
+  display: flex;
+}
+
+.description {
+  padding: 20px;
+}
+
+.animation-container {
+  flex: 1;
+  padding: 1rem;
+  background-color: #a6e3e9;
+  border-radius: 40%;
+}
+
+.animation {
+  width: 100%; /* Adjust width as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.button-container {
+  margin-top: 1rem;
+}
+
+/* Description.css */
+
+.description-text {
+  margin-bottom: 1rem;
+}
+.description-para {
+  font-family: cursive;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1479c1; /* Adjust text color as needed */
+  margin-bottom: 1rem;
+}
+.description-header {
+  text-align: center;
+  font-weight: 900;
+  font-size: 50px;
+  font-family: "HeadingFont", sans-serif;
+  color: #1479c1; /* Adjust text color as needed */
+  margin-bottom: 1rem;
+}
+
+/* SearchShops.css */
+
+.home-button-container {
+  display: flex;
+  gap: 20px;
+}
+
+.dashboard-button {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-family: cursive;
+  background-color: #71c9ce;
+  border-radius: 10px;
+  border: 2px solid #bbe1fa;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.home-button-container button {
+  padding: 10px 20px;
+  font-size: 20px;
+  font-family: cursive;
+  background-color: #71c9ce;
+  border-radius: 10px;
+  border: 2px solid #bbe1fa;
+  color: white;
+}
+
+.home-button-container button:hover,
+.dashboard-button:hover {
+  color: #bbe1fa;
+  background-color: #3282b8;
+}

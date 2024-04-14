@@ -9,7 +9,7 @@ import useHttpClient from "../../hooks/http-hook";
 
 const Login = ({ toggleForm }) => {
   const auth = useContext(AuthContext);
-  const {isLoading, error , sendRequest,clearError } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -25,7 +25,7 @@ const Login = ({ toggleForm }) => {
     }
     clearError();
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,11 +59,12 @@ const Login = ({ toggleForm }) => {
           onChange={handleInputChange}
           icon={keyicon}
         />
+        {error && <p style={{ color: 'red' }} >{error}</p>} {/* Display error message if error state is not empty */}
+
         <button className="login-button" type="submit" disabled={isLoading}>
           {isLoading ? "Logging In..." : "Log In"}
         </button>
       </Form>
-      {error && <p style={{ color: 'red' }} >{error}</p>} {/* Display error message if error state is not empty */}
       <p className="SwitchSL">
         Don't have an account?{" "}
         <a href="#!" onClick={toggleForm}>

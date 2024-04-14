@@ -5,11 +5,13 @@ import Form from "./Form";
 import Input from "./Input";
 import usericon from "../../Assets/Img/usercon.png";
 import keyicon from "../../Assets/Img/keyIcon.png";
+import shopicon from "../../assets/Img/shopIcon.png";
+import locationicon from "../../assets/Img/locationIcon.png";
 import LoadingSpinner from "../UI Elements/LoadingSpinner";
 
 const Signup = ({ toggleForm }) => {
   const auth = useContext(AuthContext);
-  const {isLoading, error , sendRequest,clearError } = useHttpClient();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const initialFormData = {
     shopname: "",
@@ -92,7 +94,7 @@ const Signup = ({ toggleForm }) => {
 
   return (
     <>
-      {isLoading && <LoadingSpinner  asOverlay/>}
+      {isLoading && <LoadingSpinner asOverlay />}
       <Form onSubmit={handleSubmit}>
         <Input
           type="text"
@@ -101,7 +103,7 @@ const Signup = ({ toggleForm }) => {
           value={formData.shopname}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
-          icon={usericon}
+          icon={shopicon}
         />
         <Input
           type="text"
@@ -110,7 +112,7 @@ const Signup = ({ toggleForm }) => {
           value={formData.shoplocation}
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
-          icon={usericon}
+          icon={locationicon}
         />
         <Input
           type="email"
@@ -142,11 +144,12 @@ const Signup = ({ toggleForm }) => {
           errorMessage={errors.confirmPassword}
           icon={keyicon}
         />
+        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message if error state is not empty */}
+
         <button className="login-button" type="submit" disabled={isLoading}>
-        {isLoading ? "Signing Up..." : "Sign Up"}
+          {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
       </Form>
-      {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error message if error state is not empty */}
       <p>
         Already have an account?{" "}
         <a href="#!" onClick={toggleForm}>

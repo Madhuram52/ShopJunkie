@@ -2,7 +2,7 @@ import React from "react";
 
 const Input = ({ type, id, placeholder, value, onChange, onBlur, errorMessage, icon }) => {
     return (
-        <div>
+        <>
             <input
                 className="form-input"
                 type={type}
@@ -16,7 +16,7 @@ const Input = ({ type, id, placeholder, value, onChange, onBlur, errorMessage, i
 
             ></input>
             {errorMessage && <p className="error-message">{errorMessage}</p>}
-        </div>
+        </>
     );
 };
 

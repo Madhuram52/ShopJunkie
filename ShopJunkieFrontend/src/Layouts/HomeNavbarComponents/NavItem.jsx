@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function NavItem({ link, children }) {
     return (
-        <Link to={link}>
+        <Link to={link} className="nav-item">
             {children}
         </Link>
     )

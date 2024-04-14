@@ -1,9 +1,13 @@
+// SearchProducts.jsx
+
 import React, { useState } from "react";
 import useHttpClient from "../hooks/http-hook"; // Import the custom http hook
 import LoadingSpinner from "../Components/UI Elements/LoadingSpinner";
+import SearchResultItem from "../Components/SearchProdComponents/SearchResultItem";
+import "./SearchProducts.css"; // Import CSS for SearchProducts styling
 
 function SearchProducts() {
-    const { isLoading, error, sendRequest, clearError } = useHttpClient(); // Use the custom http hook
+    const { isLoading, error, sendRequest } = useHttpClient(); // Use the custom http hook
 
     const [query, setQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -22,34 +26,33 @@ function SearchProducts() {
     };
 
     return (
-        <>
-            <input
-                type="text"
-                placeholder="Search Products"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-            />
-            <button onClick={handleSearch}>Search</button>
-            {/* Display search results */}
-            {isLoading && <LoadingSpinner />}
-            {error && <p>{error}</p>}
-            {!error && !isLoading && searchResults.length > 0 && (
-                <>
-                    <h3>Search Results:</h3>
-                    <ul>
-                        {searchResults.map(product => (
-                            <li key={product._id} >
-                                <strong>{product.productName}</strong>
-                                <p>Price: ${product.productPrice}</p>
-                                <p>ShopName: {product.shopName}</p>
-                                <p>Location: {product.productLocation}</p>
-                            </li>
-                        ))}
-                    </ul>
-                </>
-            )}
+        <div className="search-products-wrapper">
+            <div className="search-products-container">
+                <div className="search-input-container">
+                    <input
+                        type="text"
+                        placeholder="Search Products"
+                        value={query}
+                        onChange={e => setQuery(e.target.value)}
+                    />
+                    <button onClick={handleSearch}>Search</button>
+                </div>
 
-        </>
+                {/* Display search results */}
+                {isLoading && <LoadingSpinner />}
+                {error && <p>{error}</p>}
+                {!error && !isLoading && searchResults.length > 0 && (
+                    <>
+                        <h3 className="search-results-title">Search Results:</h3>
+                        <div className="search-results-list">
+                            {searchResults.map(product => (
+                                <SearchResultItem key={product._id} product={product} />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
     );
 }
 

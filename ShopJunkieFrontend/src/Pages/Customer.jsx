@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { AuthContext } from "../Contexts/auth-context";
 import useHttpClient from "../hooks/http-hook"; // Import the useHttpClient hook
 import LoadingSpinner from "../Components/UI Elements/LoadingSpinner";
+import './Customer.css';
 // import axios from "axios"; // No longer needed
 
 function Customer(props) {
@@ -14,7 +15,7 @@ function Customer(props) {
   const [searchResults, setSearchResults] = useState([]);
   // const { shopid: routeSname } = useParams(); // Using useParams to get sid from the route params
 
-  const routeId =auth.shopId;
+  const routeId = auth.shopId;
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient(); // Initialize the useHttpClient hook
 
@@ -37,8 +38,7 @@ function Customer(props) {
     }
   };
 
-  const handleProductSelect = (product) =>
-  {
+  const handleProductSelect = (product) => {
     if (productSelect && typeof productSelect === 'function') {
       productSelect(product);
     } else {
@@ -47,40 +47,41 @@ function Customer(props) {
   }
 
   return (
-    <>
+    <div className="customer-container">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        className="search-input"
       />
-      <button onClick={handleSubmit}>Submit</button>
+      <button onClick={handleSubmit} className="search-btn">Submit</button>
       {isLoading && <LoadingSpinner />}
-      {error && <p>{error}</p>}
+      {error && <p className="error-msg">{error}</p>}
       {searchResults.length > 0 && (
-        <>
-          <h3>Search Results:</h3>
-          <ul>
+        <div className="search-results">
+          <h3 className="search-results-heading">Search Results:</h3>
+          <ul className="product-list">
             {searchResults.map((product) => (
-              <li key={product.productName} onClick={() => handleProductSelect(product)}>
-                <strong>{product.productName}</strong>
-                <p>Type: {product.productType}</p>
-                <p>Price: ${product.productPrice}</p>
-                <p>Location: {product.productLocation}</p>
-                {loadAll && <p>Quantity Left: {product.productQuantity}</p>}
-                {loadAll && <p>Sold This Month: {product.SoldThisMonth}</p>}
+              <li key={product.productName} onClick={() => handleProductSelect(product)} className="product-item">
+                <strong className="product-name">{product.productName}</strong>
+                <p className="product-info">Type: {product.productType}</p>
+                <p className="product-info">Price: ${product.productPrice}</p>
+                <p className="product-info">Location: {product.productLocation}</p>
+                {loadAll && <p className="product-info">Quantity Left: {product.productQuantity}</p>}
+                {loadAll && <p className="product-info">Sold This Month: {product.SoldThisMonth}</p>}
               </li>
             ))}
           </ul>
-        </>
+        </div>
       )}
-      {auth.isLoggedIn && (
+      {auth.isLoggedIn && !loadAll && (
         <div>
-          <button>Alarm</button>
+          <button className="alarm-btn">Alarm</button>
         </div>
       )}
       {/* Rendering sid dynamically based on the prop or route */}
       {/* <div>{sname}</div> */}
-    </>
+    </div>
   );
 }
 

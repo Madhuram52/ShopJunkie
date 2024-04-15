@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css'
 import { Route, Routes, Navigate, renderMatches } from 'react-router-dom';
 import { useAuth } from './hooks/auth-hook';
 import { AuthContext } from './Contexts/auth-context';

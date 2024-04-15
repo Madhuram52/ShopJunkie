@@ -1,4 +1,4 @@
-import React, { useState, useEffect , useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Customer from '../../Pages/Customer';
 import useHttpClient from '../../hooks/http-hook'; // Update the path to your useHttpClient hook
 import { AuthContext } from '../../Contexts/auth-context';
@@ -40,7 +40,7 @@ function UpdateItem() {
         productLocation: updateFields.location || selectedProduct.productLocation,
         productQuantity: updateFields.quantity || selectedProduct.productQuantity
       };
-      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'PATCH', updatedProduct , { Authorization: 'Bearer ' + auth.token });
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'PATCH', updatedProduct, { Authorization: 'Bearer ' + auth.token });
       console.log('Product updated successfully:', responseData);
       setSelectedProduct(null);
       setUpdateFields({
@@ -57,7 +57,7 @@ function UpdateItem() {
 
   const handleRemoveProduct = async () => {
     try {
-      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'DELETE' ,null,{ Authorization: 'Bearer ' + auth.token });
+      const responseData = await sendRequest(`http://localhost:5000/api/owner/${selectedProduct._id}`, 'DELETE', null, { Authorization: 'Bearer ' + auth.token });
       console.log('Product removed successfully:', responseData);
       setSelectedProduct(null);
       setMessage('Product removed successfully');
@@ -77,12 +77,12 @@ function UpdateItem() {
   }, [refreshCustomer]);
 
   return (
-    <div>
+    <div className="update-item-container">
       <Customer key={refreshCustomer} loadAll={true} onProductSelect={handleSearch} />
       {/* Update Fields */}
       {selectedProduct && (
         <div>
-          <h3>Update {selectedProduct.productName}:</h3>
+          <h3 className="update-item-heading">Update {selectedProduct.productName}:</h3>
           <input
             type="text"
             placeholder="New Price"
@@ -101,17 +101,17 @@ function UpdateItem() {
             value={updateFields.quantity}
             onChange={e => handleFieldChange(e, 'quantity')}
           />
-          <button onClick={handleUpdateProduct}>Update</button>
-          <button onClick={handleRemoveProduct}>Remove Product</button>
+          <button onClick={handleUpdateProduct} className="update-item-btn">Update</button>
+          <button onClick={handleRemoveProduct} className="remove-item-btn">Remove Product</button>
         </div>
       )}
 
       {/* Display error message */}
-      {error && <p>Error: {error}</p>}
+      {error && <p className="error-msg">Error: {error}</p>}
       {/* Display loading indicator */}
       {isLoading && <LoadingSpinner />}
       {/* Display success message */}
-      {message && <p>{message}</p>}
+      {message && <p className="success-msg">{message}</p>}
     </div>
   );
 }

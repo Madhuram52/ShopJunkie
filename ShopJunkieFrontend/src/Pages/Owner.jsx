@@ -5,6 +5,8 @@ import AddItem from '../Components/OwnerComponents/AddItem';
 import UpdateItem from '../Components/OwnerComponents/UpdateItem';
 import TrackProducts from '../Components/OwnerComponents/TrackProducts';
 import Billing from '../Components/OwnerComponents/Billing';
+import WaterMark from '../Components/OwnerComponents/WaterMark';
+import './Owner.css'
 
 function Owner(){
   const [selectedNavItem, setSelectedNavItem] = useState('');
@@ -20,7 +22,7 @@ function Owner(){
       case 'billingprod':
         return <Billing />;
       default:
-        return null;
+        return <WaterMark />;
     }
   };
 

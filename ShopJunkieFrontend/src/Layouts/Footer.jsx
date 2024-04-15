@@ -30,7 +30,7 @@ function Footer() {
                         <a href=" https://wa.me/917016501905"><Lottie options={{ ...defaultOptions, animationData: whatsappAnimation }} height={30} width={30} /></a>
                     </li>
                     <li>
-                        <a href="mailto:example@gmail.com"><Lottie options={{ ...defaultOptions, animationData: gmailAnimation }} height={30} width={30} /></a>
+                        <a href="mailto:madhuram.modi3110@gmail.com"><Lottie options={{ ...defaultOptions, animationData: gmailAnimation }} height={30} width={30} /></a>
                     </li>
                 </ul>
             </div>

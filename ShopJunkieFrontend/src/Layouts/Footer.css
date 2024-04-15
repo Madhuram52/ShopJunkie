@@ -1,7 +1,7 @@
 /* Footer.css */
 
 .footer {
-    background-color: #333; /* Adjust background color as needed */
+    background-color: #A6E3E9; /* Adjust background color as needed */
     color: #fff; /* Adjust text color as needed */
     padding: 2rem 0;
     text-align: center;
@@ -22,6 +22,9 @@
   }
   
   .footer-links li {
+    border: 2px #71C9CE;
+    border-style:groove;
+    border-radius: 10px;
     display: inline-block;
     margin-right: 1rem;
   }

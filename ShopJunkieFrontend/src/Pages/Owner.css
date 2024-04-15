@@ -1,0 +1,138 @@
+.owner-dashboard {
+  display: flex;
+  flex-direction: row;
+  background-color: #a6e3e9;
+}
+
+.dashboard-content {
+  /* margin-left: 20vw; */
+  padding: 20px 20px 20px 20px;
+  background-color: #e3fdfd;
+  margin: 50px 50px 50px 23vw;
+  width: 80%;
+  border-radius: 20px;
+  min-height:80vh;
+  /* text-align: center; */
+}
+.dashboard-nav {
+  position: fixed;
+  width: 20vw;
+  height: 100vh;
+  background-color: #71c9ce;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  /* align-items:center; */
+  justify-content: center;
+}
+
+.dash-item-container {
+  height: 80vh;
+  width: 100%;
+  margin-top: 20vh;
+}
+
+.dashboard-nav button {
+  padding: 10px 8px;
+  margin: 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.dashboard-nav button:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-nav-item {
+  padding: 10px 20px 10px 50px;
+  cursor: pointer;
+}
+
+.dashboard-nav-item:hover {
+  background-color: #599da0;
+}
+
+/* OwnerComponents.css */
+
+/* AddItem Component */
+.add-item-container {
+  margin-bottom: 20px;
+}
+
+.add-item-container h2 {
+  margin-bottom: 10px;
+}
+
+.add-item-container form div {
+  margin-bottom: 10px;
+}
+
+.add-item-container label {
+  margin-right: 10px;
+}
+
+.add-item-container input[type="text"],
+.add-item-container input[type="number"],
+.add-item-container select {
+  width: 70%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.add-item-container button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-item-container button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.error-msg {
+  color: red;
+  margin-top: 5px;
+}
+
+/* UpdateItem Component */
+.update-item-container {
+  margin-bottom: 20px;
+}
+
+.update-item-container h3 {
+  margin-bottom: 10px;
+}
+
+.update-item-container input[type="text"],
+.update-item-container input[type="number"] {
+  width: calc(33.33% - 20px); /* Adjust width as needed */
+  padding: 8px;
+  margin-right: 10px;
+}
+
+.update-item-container button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.update-item-container button:hover {
+  background-color: #0056b3;
+}
+
+.error-msg {
+  color: red;
+  margin-top: 5px;
+}

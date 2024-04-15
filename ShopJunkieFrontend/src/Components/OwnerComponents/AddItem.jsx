@@ -115,8 +115,8 @@ function AddItem() {
   };
 
   return (
-    <div>
-      <h2>Add Item</h2>
+    <div className="add-item-container">
+      <h2 className="add-item-heading">Add Item</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="itemName">Item Name:</label>
@@ -126,7 +126,7 @@ function AddItem() {
             value={itemName}
             onChange={handleItemNameChange}
           />
-          {itemNameError && <p style={{ color: "red" }}>{itemNameError}</p>}
+          {itemNameError && <p className="error-msg">{itemNameError}</p>}
         </div>
         <div>
           <label htmlFor="itemType">Item Type:</label>
@@ -141,7 +141,7 @@ function AddItem() {
             <option value="footwear">Footwear</option>
             {/* Add more options as needed */}
           </select>
-          {itemTypeError && <p style={{ color: "red" }}>{itemTypeError}</p>}
+          {itemTypeError && <p className="error-msg">{itemTypeError}</p>}
         </div>
         <div>
           <label htmlFor="itemPrice">Item Price:</label>
@@ -151,7 +151,7 @@ function AddItem() {
             value={itemPrice}
             onChange={handleItemPriceChange}
           />
-          {itemPriceError && <p style={{ color: "red" }}>{itemPriceError}</p>}
+          {itemPriceError && <p className="error-msg">{itemPriceError}</p>}
         </div>
         <div>
           <label htmlFor="itemQuantity">Item Quantity:</label>
@@ -162,7 +162,7 @@ function AddItem() {
             onChange={handleItemQuantityChange}
           />
           {itemQuantityError && (
-            <p style={{ color: "red" }}>{itemQuantityError}</p>
+            <p className="error-msg">{itemQuantityError}</p>
           )}
         </div>
         <div>
@@ -174,15 +174,15 @@ function AddItem() {
             onChange={handleItemLocationChange}
           />
           {itemLocationError && (
-            <p style={{ color: "red" }}>{itemLocationError}</p>
+            <p className="error-msg">{itemLocationError}</p>
           )}
         </div>
-        <button type="submit">Add Item</button>
+        <button type="submit" className="add-item-btn">Add Item</button>
       </form>
       <div>
         {isLoading && <LoadingSpinner />} {/* Show loading spinner if loading */}
-        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Show error message if error */}
-        {success && !isLoading && !error && <p>Item added successfully!</p>} {/* Show success message */}
+        {error && <p className="error-msg">{error}</p>} {/* Show error message if error */}
+        {success && !isLoading && !error && <p className="success-msg">Item added successfully!</p>} {/* Show success message */}
       </div>
     </div>
   );
